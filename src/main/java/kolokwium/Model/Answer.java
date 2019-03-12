@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 
 @Entity
-public class Answers {
+public class Answer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -16,7 +16,7 @@ public class Answers {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "idQuestions",nullable = false)
     @JsonIgnore
-    private Questions questions;
+    private Question question;
 
 
     public Integer getIdAnswers() {
@@ -35,11 +35,16 @@ public class Answers {
         this.text = text;
     }
 
-    public Questions getQuestions() {
-        return questions;
+    public Question getQuestion() {
+        return question;
     }
 
-    public void setQuestions(Questions questions) {
-        this.questions = questions;
+    public void setQuestion(Question question) {
+        this.question = question;
+    }
+
+    public Answer(String text, Question question) {
+        this.text = text;
+        this.question = question;
     }
 }

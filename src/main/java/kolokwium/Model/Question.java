@@ -6,19 +6,19 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class Questions {
+public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer idQuestions;
+    private Long id;
 
     private String text;
 
-    public Integer getIdQuestions() {
-        return idQuestions;
+    public Long getId() {
+        return id;
     }
 
-    public void setIdQuestions(Integer idQuestions) {
-        this.idQuestions = idQuestions;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getText() {
@@ -29,4 +29,10 @@ public class Questions {
         this.text = text;
     }
 
+    public Question(String text) {
+        this.text = text;
+    }
+
+    public Question() {
+    }
 }
