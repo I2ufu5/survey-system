@@ -17,8 +17,8 @@ public class User {
 
     private Float testResult;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "id",nullable = false,insertable=false, updatable=false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "idRole",nullable = false)
     private Role role;
 
     public Integer getId() {

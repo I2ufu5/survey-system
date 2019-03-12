@@ -14,6 +14,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @SpringBootApplication
 public class Application extends SpringBootServletInitializer {
@@ -34,12 +35,13 @@ public class Application extends SpringBootServletInitializer {
             QuestionsDAO questionsDAO,
             AnswersDAO answersDAO,
             RoleDAO roleDao){
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
         return (args) -> {
             roleDao.save(new Role("admin"));
             roleDao.save(new Role("user"));
 
-            usersDAO.save(new User(145203,"Kowalski","haslo",roleDao.findRoleByName("admin")));
+            usersDAO.save(new User(145203,"Kowalski", passwordEncoder.encode("haslo"),roleDao.findRoleByName("admin")));
             usersDAO.save(new User(132940, "Malinowski","ABCD",roleDao.findRoleByName("user")));
             usersDAO.save(new User(153421,"Duda","qwerty", roleDao.findRoleByName("user")));
 

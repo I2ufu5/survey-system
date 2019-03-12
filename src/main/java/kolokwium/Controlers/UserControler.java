@@ -38,7 +38,7 @@ public class UserControler {
 
         securityService.autoLogin(userForm.getName(), userForm.getPassword());
 
-        return "redirect:/welcome";
+        return "redirect:/hello";
     }
 
     @GetMapping("/login")
@@ -52,8 +52,8 @@ public class UserControler {
         return "login";
     }
 
-    @GetMapping({"/", "/welcome"})
+    @GetMapping({"/", "/home"})
     public String welcome(Model model) {
-        return "welcome";
+        return "home";
     }
 }
