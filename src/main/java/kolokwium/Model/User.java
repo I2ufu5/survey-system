@@ -17,9 +17,11 @@ public class User {
 
     private Float testResult;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "roleId",nullable = false)
-    private Role role;
+    private boolean isAdmin = false;
+
+//    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+//    @JoinColumn(name = "roleId",nullable = false)
+//    private Role role;
 
     public Long getUserId() {
         return userId;
@@ -61,19 +63,28 @@ public class User {
         this.testResult = testResult;
     }
 
-    public Role getRole() {
-        return role;
+//    public Role getRole() {
+//        return role;
+//    }
+//
+//    public void setRole(Role role) {
+//        this.role = role;
+//    }
+
+
+    public boolean isAdmin() {
+        return isAdmin;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public User setAdmin() {
+        this.isAdmin = true;
+        return this;
     }
 
-    public User(Integer albumNumber, String name, String password, Role role) {
+    public User(Integer albumNumber, String name, String password) {
         this.albumNumber = albumNumber;
         this.name = name;
         this.password = password;
-        this.role = role;
     }
 
     public User() {

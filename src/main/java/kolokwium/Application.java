@@ -28,18 +28,19 @@ public class Application extends SpringBootServletInitializer {
             UsersDAO usersDAO,
             QuestionsDAO questionsDAO,
             AnswersDAO answersDAO,
-            RoleDAO roleDao,
+//            RoleDAO roleDao,
             ResponseDAO responseDAO){
 
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
         return (args) -> {
-            roleDao.save(new Role("admin"));
-            roleDao.save(new Role("user"));
+//            roleDao.save(new Role("admin"));
+//            roleDao.save(new Role("user"));
 
-            usersDAO.save(new User(145203,"Kowalski", passwordEncoder.encode("haslo"),roleDao.findRoleByName("admin")));
-            usersDAO.save(new User(132940, "Malinowski","ABCD",roleDao.findRoleByName("user")));
-            usersDAO.save(new User(153421,"Duda","qwerty", roleDao.findRoleByName("user")));
+            usersDAO.save(new User(145203,"Kowalski", passwordEncoder.encode("haslo")));
+            usersDAO.save(usersDAO.findUserByAlbumNumber(145203).setAdmin());
+            usersDAO.save(new User(132940, "Malinowski","ABCD"));
+            usersDAO.save(new User(153421,"Duda","qwerty"));
 
             questionsDAO.save(new Question("Pytanie1"));
             questionsDAO.save(new Question("Pytanie2"));

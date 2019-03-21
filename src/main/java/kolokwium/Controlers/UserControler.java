@@ -1,59 +1,39 @@
 package kolokwium.Controlers;
 
 import kolokwium.Model.User;
-import kolokwium.Security.SecurityService;
-import kolokwium.Security.UserService;
+import kolokwium.Repo.UsersDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Base64;
 
 @Controller
 public class UserControler {
-    @Autowired
-    private UserService userService;
 
     @Autowired
-    private SecurityService securityService;
+    private UsersDAO usersDAO;
 
-    @GetMapping("/registration")
-    public String registration(Model model) {
-        model.addAttribute("userForm", new User());
-
-        return "registration";
+    @RequestMapping("/login")
+    @ResponseBody
+    public User login(@RequestBody User user) {
+        return usersDAO.findUserByAlbumNumber(user.getAlbumNumber());
     }
 
-    @PostMapping("/registration")
-    public String registration(@ModelAttribute("userForm") User userForm, BindingResult bindingResult) {
-        //userValidator.validate(userForm, bindingResult);
-
-        if (bindingResult.hasErrors()) {
-            return "registration";
-        }
-
-        userService.save(userForm);
-
-        securityService.autoLogin(userForm.getName(), userForm.getPassword());
-
-        return "redirect:/hello";
+    @RequestMapping("/user")
+    public Principal user(HttpServletRequest request) {
+        String authToken = request.getHeader("Authorization")
+                .substring("Basic".length()).trim();
+        return () ->  new String(Base64.getDecoder()
+                .decode(authToken)).split(":")[0];
     }
 
-    @GetMapping("/login")
-    public String login(Model model, String error, String logout) {
-        if (error != null)
-            model.addAttribute("error", "Your username and password is invalid.");
-
-        if (logout != null)
-            model.addAttribute("message", "You have been logged out successfully.");
-
-        return "login";
-    }
-
-    @GetMapping({"/", "/home"})
-    public String welcome(Model model) {
-        return "home";
+    @RequestMapping("/users")
+    @ResponseBody
+    public ArrayList<User> listUsers(){
+        return (ArrayList)usersDAO.findAll();
     }
 }
