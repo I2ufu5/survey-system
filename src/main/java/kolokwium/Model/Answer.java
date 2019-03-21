@@ -8,23 +8,33 @@ import javax.persistence.*;
 public class Answer {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer idAnswers;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long answerId;
 
     private String text;
 
+    private boolean isCorrect;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "idQuestions",nullable = false)
+    @JoinColumn(name = "questionId",nullable = false)
     @JsonIgnore
     private Question question;
 
-
-    public Integer getIdAnswers() {
-        return idAnswers;
+    public Answer(String text, Question question, boolean isCorrect) {
+        this.text = text;
+        this.question = question;
+        this.isCorrect = isCorrect;
     }
 
-    public void setIdAnswers(Integer idAnswers) {
-        this.idAnswers = idAnswers;
+    public Answer() {
+    }
+
+    public Long getAnswerId() {
+        return answerId;
+    }
+
+    public void setAnswerId(Long answerId) {
+        this.answerId = answerId;
     }
 
     public String getText() {
@@ -43,8 +53,4 @@ public class Answer {
         this.question = question;
     }
 
-    public Answer(String text, Question question) {
-        this.text = text;
-        this.question = question;
-    }
 }

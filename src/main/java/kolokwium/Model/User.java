@@ -6,8 +6,8 @@ import javax.persistence.*;
 @Entity
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long userId;
 
     private Integer albumNumber;
 
@@ -18,15 +18,15 @@ public class User {
     private Float testResult;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "idRole",nullable = false)
+    @JoinColumn(name = "roleId",nullable = false)
     private Role role;
 
-    public Integer getId() {
-        return id;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public Integer getAlbumNumber() {

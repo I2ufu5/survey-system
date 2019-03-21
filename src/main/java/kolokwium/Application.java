@@ -1,13 +1,7 @@
 package kolokwium;
 
-import kolokwium.Model.Answer;
-import kolokwium.Model.Question;
-import kolokwium.Model.Role;
-import kolokwium.Model.User;
-import kolokwium.Repo.AnswersDAO;
-import kolokwium.Repo.QuestionsDAO;
-import kolokwium.Repo.RoleDAO;
-import kolokwium.Repo.UsersDAO;
+import kolokwium.Model.*;
+import kolokwium.Repo.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -34,7 +28,9 @@ public class Application extends SpringBootServletInitializer {
             UsersDAO usersDAO,
             QuestionsDAO questionsDAO,
             AnswersDAO answersDAO,
-            RoleDAO roleDao){
+            RoleDAO roleDao,
+            ResponseDAO responseDAO){
+
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
         return (args) -> {
@@ -48,8 +44,26 @@ public class Application extends SpringBootServletInitializer {
             questionsDAO.save(new Question("Pytanie1"));
             questionsDAO.save(new Question("Pytanie2"));
 
-            if(questionsDAO.findQuestionsById(4L)!= null)
-            answersDAO.save(new Answer("Odpowiedz1", questionsDAO.findQuestionsById(4L)));
+            answersDAO.save(new Answer("Odpowiedz1", questionsDAO.findQuestionsByQuestionId(1L),true));
+            answersDAO.save(new Answer("Odpowiedz2", questionsDAO.findQuestionsByQuestionId(1L),false));
+            answersDAO.save(new Answer("Odpowiedz3", questionsDAO.findQuestionsByQuestionId(1L),false));
+
+            answersDAO.save(new Answer("Odpowiedz1", questionsDAO.findQuestionsByQuestionId(2L),false));
+            answersDAO.save(new Answer("Odpowiedz2", questionsDAO.findQuestionsByQuestionId(2L),false));
+            answersDAO.save(new Answer("Odpowiedz3", questionsDAO.findQuestionsByQuestionId(2L),true));
+
+            responseDAO.save(new Response(
+                    usersDAO.findUserByAlbumNumber(145203),
+                    questionsDAO.findQuestionsByQuestionId(1L),
+                    answersDAO.findAnswersByQuestion_QuestionId(1L).get(1)
+            ));
+
+            responseDAO.save(new Response(
+                    usersDAO.findUserByAlbumNumber(145203),
+                    questionsDAO.findQuestionsByQuestionId(2L),
+                    answersDAO.findAnswersByQuestion_QuestionId(1L).get(2)
+            ));
+
         };
     }
 
