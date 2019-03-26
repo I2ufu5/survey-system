@@ -15,7 +15,7 @@ public class Answer {
 
     private boolean isCorrect;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "questionId",nullable = false)
     @JsonIgnore
     private Question question;
@@ -53,4 +53,11 @@ public class Answer {
         this.question = question;
     }
 
+    public boolean isCorrect() {
+        return isCorrect;
+    }
+
+    public void setCorrect(boolean correct) {
+        isCorrect = correct;
+    }
 }

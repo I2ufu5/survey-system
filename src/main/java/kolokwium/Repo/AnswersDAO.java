@@ -10,4 +10,5 @@ import java.util.List;
 public interface AnswersDAO extends JpaRepository<Answer, Long> {
     List<Answer> findAnswersByQuestion_QuestionId(Long questionId);
     //Answer findAnswersByAnswerIdAndQuestion_QuestionId(Long answerId, Long questionId);
+    Answer findAnswersByAnswerId(Long id);
 }

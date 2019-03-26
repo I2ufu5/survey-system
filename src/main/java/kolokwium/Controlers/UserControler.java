@@ -34,18 +34,15 @@ public class UserControler {
 
     @RequestMapping("/login")
     @ResponseBody
-    public User login(@RequestBody User user) {
-        return usersDAO.findUserByAlbumNumber(user.getAlbumNumber());
+    public User login() {
+        return usersDAO.findUserByAlbumNumber();
 
     }
 
     @RequestMapping("/user")
     @ResponseBody
-    public Principal user(HttpServletRequest request) {
-        String authToken = request.getHeader("Authorization")
-                .substring("Basic".length()).trim();
-        return () ->  new String(Base64.getDecoder()
-                .decode(authToken)).split(":")[0];
+    public User user(@RequestBody User user) {
+        return userService.findByAlbumNumber(user.getAlbumNumber());
     }
 
     @RequestMapping("/users")

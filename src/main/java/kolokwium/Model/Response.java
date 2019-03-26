@@ -11,15 +11,15 @@ public class Response {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long responseId;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "userId",nullable = false)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY,optional = false)
+    @ManyToOne(fetch = FetchType.EAGER,optional = false)
     @JoinColumn(name = "questionId",nullable = false)
     private Question question;
 
-    @ManyToOne(fetch = FetchType.LAZY,optional = false)
+    @ManyToOne(fetch = FetchType.EAGER,optional = false)
     @JoinColumn(name = "answerId",nullable = false)
     private Answer answer;
 

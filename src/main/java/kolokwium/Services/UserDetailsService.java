@@ -1,15 +1,12 @@
 package kolokwium.Services;
 
 import kolokwium.Model.User;
-import kolokwium.Repo.RoleDAO;
 import kolokwium.Repo.UsersDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import javax.persistence.criteria.CriteriaBuilder;
 
 @Service
 public class UserDetailsService implements org.springframework.security.core.userdetails.UserDetailsService {
@@ -19,19 +16,50 @@ public class UserDetailsService implements org.springframework.security.core.use
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
-//    @Autowired
-//    private RoleDAO roleDAO;
-
     @Autowired
     public UserDetailsService(UsersDAO usersDAO){
         this.usersDAO = usersDAO;
     }
 
-    public void save(User user){
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+    public boolean createUser(User user){
+        if(findByAlbumNumber(user.getAlbumNumber()) == null){
+            usersDAO.save(user);
+            return true;
+        }else return false;
     }
+
+    public boolean createUser(Integer albumNumber,String name, String password){
+        if(findByAlbumNumber(albumNumber) == null){
+            usersDAO.save(new User(albumNumber,name,passwordEncoder.encode(password)));
+            return true;
+        }else return false;
+    }
+
+    public void changeUserPassword(Integer indexNumber, String newPassword){
+        User user = usersDAO.findUserByAlbumNumber(indexNumber);
+        user.setPassword(newPassword);
+        usersDAO.save(user);
+    }
+
+    public boolean setAdmin(Integer indexNumber, boolean set){
+        User user = findByAlbumNumber(indexNumber);
+        if(user == null)
+            return false;
+        else {
+            user.setAdmin(set);
+            usersDAO.save(user);
+            return true;
+        }
+    }
+
     public User findByAlbumNumber(Integer albumNumber){
         return usersDAO.findUserByAlbumNumber(albumNumber);
+    }
+
+    public void submitResult(int albumNumber, int result){
+        User user = usersDAO.findUserByAlbumNumber(albumNumber);
+        user.setTestResult(Float.valueOf(result));
+        usersDAO.save(user);
     }
 
     @Override

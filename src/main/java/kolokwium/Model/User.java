@@ -19,10 +19,6 @@ public class User {
 
     private boolean isAdmin = false;
 
-//    @ManyToOne(fetch = FetchType.EAGER, optional = false)
-//    @JoinColumn(name = "roleId",nullable = false)
-//    private Role role;
-
     public Long getUserId() {
         return userId;
     }
@@ -63,21 +59,12 @@ public class User {
         this.testResult = testResult;
     }
 
-//    public Role getRole() {
-//        return role;
-//    }
-//
-//    public void setRole(Role role) {
-//        this.role = role;
-//    }
-
-
     public boolean isAdmin() {
         return isAdmin;
     }
 
-    public User setAdmin() {
-        this.isAdmin = true;
+    public User setAdmin(boolean set) {
+        this.isAdmin = set;
         return this;
     }
 

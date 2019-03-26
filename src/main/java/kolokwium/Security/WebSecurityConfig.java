@@ -41,9 +41,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/login").permitAll().anyRequest().authenticated()
-                .and()
-                .sessionManagement()
+                .antMatchers("/").permitAll().anyRequest().authenticated()
                 .and()
                 .httpBasic();
         http.addFilterBefore(new CorsFilter(), ChannelProcessingFilter.class);

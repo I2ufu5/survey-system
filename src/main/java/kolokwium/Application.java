@@ -2,6 +2,8 @@ package kolokwium;
 
 import kolokwium.Model.*;
 import kolokwium.Repo.*;
+import kolokwium.Services.ResponseService;
+import kolokwium.Services.UserDetailsService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -25,22 +27,20 @@ public class Application extends SpringBootServletInitializer {
 
     @Bean
     public CommandLineRunner DatabaseInit(
-            UsersDAO usersDAO,
+            UserDetailsService userDetailsService,
             QuestionsDAO questionsDAO,
             AnswersDAO answersDAO,
-//            RoleDAO roleDao,
-            ResponseDAO responseDAO){
+            ResponseDAO responseDAO,
+            ResponseService responseService){
 
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
         return (args) -> {
-//            roleDao.save(new Role("admin"));
-//            roleDao.save(new Role("user"));
-
-            usersDAO.save(new User(145203,"Kowalski", passwordEncoder.encode("haslo")));
-            usersDAO.save(usersDAO.findUserByAlbumNumber(145203).setAdmin());
-            usersDAO.save(new User(132940, "Malinowski","ABCD"));
-            usersDAO.save(new User(153421,"Duda","qwerty"));
+//
+            userDetailsService.createUser(145203,"Kowalski", "haslo");
+            userDetailsService.setAdmin(145203,true);
+            userDetailsService.createUser(132940, "Malinowski","ABCD");
+            userDetailsService.createUser(153421,"Duda","qwerty");
 
             questionsDAO.save(new Question("Pytanie1"));
             questionsDAO.save(new Question("Pytanie2"));
@@ -54,16 +54,18 @@ public class Application extends SpringBootServletInitializer {
             answersDAO.save(new Answer("Odpowiedz3", questionsDAO.findQuestionsByQuestionId(2L),true));
 
             responseDAO.save(new Response(
-                    usersDAO.findUserByAlbumNumber(145203),
+                    userDetailsService.findByAlbumNumber(145203),
                     questionsDAO.findQuestionsByQuestionId(1L),
-                    answersDAO.findAnswersByQuestion_QuestionId(1L).get(1)
+                    answersDAO.findAnswersByQuestion_QuestionId(1L).get(0)
             ));
 
             responseDAO.save(new Response(
-                    usersDAO.findUserByAlbumNumber(145203),
+                    userDetailsService.findByAlbumNumber(145203),
                     questionsDAO.findQuestionsByQuestionId(2L),
-                    answersDAO.findAnswersByQuestion_QuestionId(1L).get(2)
+                    answersDAO.findAnswersByQuestion_QuestionId(2L).get(1)
             ));
+
+            responseService.calculateResult(145203);
 
         };
     }
