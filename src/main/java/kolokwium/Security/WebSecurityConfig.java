@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @Configuration
@@ -40,13 +41,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/login").permitAll()
-                .anyRequest()
-                .authenticated()
+                .antMatchers("/login").permitAll().anyRequest().authenticated()
                 .and()
                 .sessionManagement()
                 .and()
                 .httpBasic();
+        http.addFilterBefore(new CorsFilter(), ChannelProcessingFilter.class);
     }
 
 
