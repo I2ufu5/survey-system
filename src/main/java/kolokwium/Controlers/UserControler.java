@@ -34,8 +34,8 @@ public class UserControler {
 
     @RequestMapping("/login")
     @ResponseBody
-    public User login() {
-        return usersDAO.findUserByAlbumNumber();
+    public User login(@RequestBody User user) {
+        return usersDAO.findUserByAlbumNumber(user.getAlbumNumber());
 
     }
 
