@@ -1,53 +1,109 @@
 package kolokwium.Controlers;
 
+
+import kolokwium.Controlers.Messages.JwtResponse;
+import kolokwium.Controlers.Messages.LoginForm;
+import kolokwium.Controlers.Messages.ResponseMessage;
+import kolokwium.Controlers.Messages.SignUpForm;
+import kolokwium.Model.Role;
+import kolokwium.Model.RoleName;
 import kolokwium.Model.User;
+import kolokwium.Repo.RoleDAO;
 import kolokwium.Repo.UsersDAO;
-import kolokwium.Services.UserDetailsService;
+import kolokwium.Services.jwt.JwtProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Base64;
+import javax.validation.Valid;
+import java.util.HashSet;
+import java.util.Set;
 
-@Controller
+@CrossOrigin(origins = "*", maxAge = 3600)
+@RestController
+@RequestMapping("/api/auth")
 public class UserControler {
 
     @Autowired
-    private UsersDAO usersDAO;
+    AuthenticationManager authenticationManager;
 
     @Autowired
-    private UserDetailsService userService;
+    UsersDAO userRepository;
 
     @Autowired
-    private AuthenticationManager authenticationManager;
+    RoleDAO roleRepository;
 
     @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    PasswordEncoder encoder;
 
-    @RequestMapping("/login")
-    @ResponseBody
-    public User login(@RequestBody User user) {
-        return usersDAO.findUserByAlbumNumber(user.getAlbumNumber());
+    @Autowired
+    JwtProvider jwtProvider;
 
+    @PostMapping("/signin")
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginForm loginRequest) {
+
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        String jwt = jwtProvider.generateJwtToken(authentication);
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+        return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getUsername(), userDetails.getAuthorities()));
     }
 
-    @RequestMapping("/user")
-    @ResponseBody
-    public User user(@RequestBody User user) {
-        return userService.findByAlbumNumber(user.getAlbumNumber());
-    }
+    @PostMapping("/signup")
+    public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpForm signUpRequest) {
+        if (userRepository.existsByName(signUpRequest.getUsername())) {
+            return new ResponseEntity<>(new ResponseMessage("Fail -> Username is already taken!"),
+                    HttpStatus.BAD_REQUEST);
+        }
 
-    @RequestMapping("/users")
-    @ResponseBody
-    public ArrayList<User> listUsers(){
-        return (ArrayList)usersDAO.findAll();
+        if (userRepository.existsByAlbumNumber(signUpRequest.getAlbumNumber())) {
+            return new ResponseEntity<>(new ResponseMessage("Fail -> Email is already in use!"),
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        // Creating user's account
+        User user = new User( signUpRequest.getAlbumNumber(),signUpRequest.getName(),
+                encoder.encode(signUpRequest.getPassword()));
+
+        Set<String> strRoles = signUpRequest.getRole();
+        Set<Role> roles = new HashSet<>();
+
+        strRoles.forEach(role -> {
+            switch (role) {
+                case "admin":
+                    Role adminRole = roleRepository.findByName(RoleName.ROLE_ADMIN)
+                            .orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
+                    roles.add(adminRole);
+
+                    break;
+                case "pm":
+                    Role pmRole = roleRepository.findByName(RoleName.ROLE_PM)
+                            .orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
+                    roles.add(pmRole);
+
+                    break;
+                default:
+                    Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
+                            .orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
+                    roles.add(userRole);
+            }
+        });
+
+        user.setRoles(roles);
+        userRepository.save(user);
+
+        return new ResponseEntity<>(new ResponseMessage("User registered successfully!"), HttpStatus.OK);
     }
 }

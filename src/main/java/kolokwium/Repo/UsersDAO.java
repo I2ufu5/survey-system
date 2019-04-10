@@ -9,4 +9,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 @CrossOrigin
 public interface UsersDAO extends JpaRepository<User,Long> {
     User findUserByAlbumNumber(Integer albumNumber);
+    boolean existsByAlbumNumber(Integer albumNumber);
+    boolean existsByName(String name);
 }

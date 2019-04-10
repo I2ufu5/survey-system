@@ -2,6 +2,8 @@ package kolokwium.Model;
 
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class User {
@@ -17,7 +19,13 @@ public class User {
 
     private Float testResult;
 
-    private boolean isAdmin = false;
+    //private boolean isAdmin = false;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
 
     public Long getUserId() {
         return userId;
@@ -59,13 +67,21 @@ public class User {
         this.testResult = testResult;
     }
 
-    public boolean isAdmin() {
-        return isAdmin;
+//    public boolean isAdmin() {
+//        return isAdmin;
+//    }
+
+//    public User setAdmin(boolean set) {
+//        this.isAdmin = set;
+//        return this;
+//    }
+
+    public Set<Role> getRoles() {
+        return roles;
     }
 
-    public User setAdmin(boolean set) {
-        this.isAdmin = set;
-        return this;
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 
     public User(Integer albumNumber, String name, String password) {

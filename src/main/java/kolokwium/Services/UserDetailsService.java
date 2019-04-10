@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,7 +15,7 @@ public class UserDetailsService implements org.springframework.security.core.use
     private UsersDAO usersDAO;
 
     @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     public UserDetailsService(UsersDAO usersDAO){
@@ -41,16 +42,16 @@ public class UserDetailsService implements org.springframework.security.core.use
         usersDAO.save(user);
     }
 
-    public boolean setAdmin(Integer indexNumber, boolean set){
-        User user = findByAlbumNumber(indexNumber);
-        if(user == null)
-            return false;
-        else {
-            user.setAdmin(set);
-            usersDAO.save(user);
-            return true;
-        }
-    }
+//    public boolean setAdmin(Integer indexNumber, boolean set){
+//        User user = findByAlbumNumber(indexNumber);
+//        if(user == null)
+//            return false;
+//        else {
+//            user.setAdmin(set);
+//            usersDAO.save(user);
+//            return true;
+//        }
+//    }
 
     public User findByAlbumNumber(Integer albumNumber){
         return usersDAO.findUserByAlbumNumber(albumNumber);

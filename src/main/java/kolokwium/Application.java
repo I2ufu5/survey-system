@@ -38,7 +38,7 @@ public class Application extends SpringBootServletInitializer {
         return (args) -> {
 //
             userDetailsService.createUser(145203,"Kowalski", "haslo");
-            userDetailsService.setAdmin(145203,true);
+            //userDetailsService.setAdmin(145203,true);
             userDetailsService.createUser(132940, "Malinowski","ABCD");
             userDetailsService.createUser(153421,"Duda","qwerty");
 
