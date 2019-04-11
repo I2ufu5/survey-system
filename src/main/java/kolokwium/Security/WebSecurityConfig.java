@@ -1,8 +1,8 @@
 package kolokwium.Security;
 
-import kolokwium.Services.UserDetailsService;
-import kolokwium.Services.jwt.JwtAuthEntryPoint;
-import kolokwium.Services.jwt.JwtAuthTokenFilter;
+import kolokwium.Services.modelServices.UserService;
+import kolokwium.Services.jwtServices.JwtAuthEntryPoint;
+import kolokwium.Services.jwtServices.JwtAuthTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,9 +15,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @Configuration
 @EnableWebSecurity
@@ -26,7 +24,7 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 )
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
-    UserDetailsService userDetailsService;
+    UserService userService;
 
     @Autowired
     private JwtAuthEntryPoint unauthorizedHandler;
@@ -39,7 +37,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder
-                .userDetailsService(userDetailsService)
+                .userDetailsService(userService)
                 .passwordEncoder(passwordEncoder());
     }
 

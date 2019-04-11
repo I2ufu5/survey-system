@@ -1,11 +1,13 @@
-package kolokwium.Services.jwt;
+package kolokwium.Services.jwtServices;
 
 import io.jsonwebtoken.*;
+//import kolokwium.Services.UserPrinciple;
 import kolokwium.Services.UserPrinciple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -24,9 +26,10 @@ public class JwtProvider {
     public String generateJwtToken(Authentication authentication) {
 
         UserPrinciple userPrincipal = (UserPrinciple) authentication.getPrincipal();
+        //UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
 
         return Jwts.builder()
-		                .setSubject((userPrincipal.getUsername()))
+		                .setSubject((userPrincipal.getEmail()))
 		                .setIssuedAt(new Date())
 		                .setExpiration(new Date((new Date()).getTime() + jwtExpiration*1000))
 		                .signWith(SignatureAlgorithm.HS512, jwtSecret)
@@ -57,5 +60,12 @@ public class JwtProvider {
 			                .setSigningKey(jwtSecret)
 			                .parseClaimsJws(token)
 			                .getBody().getSubject();
+    }
+
+    public String getEmailFromJwtToken(String token) {
+        return Jwts.parser()
+                .setSigningKey(jwtSecret)
+                .parseClaimsJws(token)
+                .getBody().getSubject();
     }
 }

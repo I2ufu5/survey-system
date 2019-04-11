@@ -11,7 +11,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
-    private Integer albumNumber;
+    private String email;
 
     private String name;
 
@@ -21,7 +21,7 @@ public class User {
 
     //private boolean isAdmin = false;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
@@ -35,12 +35,12 @@ public class User {
         this.userId = userId;
     }
 
-    public Integer getAlbumNumber() {
-        return albumNumber;
+    public String getEmail() {
+        return email;
     }
 
-    public void setAlbumNumber(Integer albumNumber) {
-        this.albumNumber = albumNumber;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getName() {
@@ -67,15 +67,6 @@ public class User {
         this.testResult = testResult;
     }
 
-//    public boolean isAdmin() {
-//        return isAdmin;
-//    }
-
-//    public User setAdmin(boolean set) {
-//        this.isAdmin = set;
-//        return this;
-//    }
-
     public Set<Role> getRoles() {
         return roles;
     }
@@ -84,8 +75,8 @@ public class User {
         this.roles = roles;
     }
 
-    public User(Integer albumNumber, String name, String password) {
-        this.albumNumber = albumNumber;
+    public User(String albumNumber, String name, String password) {
+        this.email = albumNumber;
         this.name = name;
         this.password = password;
     }

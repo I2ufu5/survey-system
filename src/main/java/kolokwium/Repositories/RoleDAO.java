@@ -1,4 +1,4 @@
-package kolokwium.Repo;
+package kolokwium.Repositories;
 
 import kolokwium.Model.Role;
 import kolokwium.Model.RoleName;

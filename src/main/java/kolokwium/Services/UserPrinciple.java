@@ -14,11 +14,11 @@ import java.util.stream.Collectors;
 public class UserPrinciple implements UserDetails {
 	private static final long serialVersionUID = 1L;
 
-	private Long id;
+	private Long userId;
 
     private String name;
 
-    private Integer albumNumber;
+    private String email;
 
     @JsonIgnore
     private String password;
@@ -26,11 +26,11 @@ public class UserPrinciple implements UserDetails {
     private Collection<? extends GrantedAuthority> authorities;
 
     public UserPrinciple(Long id, String name,
-                         Integer albumNumber, String password,
+                         String email, String password,
                          Collection<? extends GrantedAuthority> authorities) {
-        this.id = id;
+        this.userId = id;
         this.name = name;
-        this.albumNumber = albumNumber;
+        this.email = email;
         this.password = password;
         this.authorities = authorities;
     }
@@ -43,22 +43,22 @@ public class UserPrinciple implements UserDetails {
         return new UserPrinciple(
                 user.getUserId(),
                 user.getName(),
-                user.getAlbumNumber(),
+                user.getEmail(),
                 user.getPassword(),
                 authorities
         );
     }
 
     public Long getUserId() {
-        return id;
+        return userId;
     }
 
     public String getUsername() {
         return name;
     }
 
-    public Integer getAlbumNumber() {
-        return albumNumber;
+    public String getEmail() {
+        return email;
     }
 
     @Override
@@ -95,8 +95,8 @@ public class UserPrinciple implements UserDetails {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        
+
         UserPrinciple user = (UserPrinciple) o;
-        return Objects.equals(id, user.id);
+        return Objects.equals(userId, user.userId);
     }
 }

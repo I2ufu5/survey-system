@@ -1,4 +1,4 @@
-package kolokwium.Repo;
+package kolokwium.Repositories;
 
 import kolokwium.Model.Question;
 import org.springframework.data.jpa.repository.JpaRepository;

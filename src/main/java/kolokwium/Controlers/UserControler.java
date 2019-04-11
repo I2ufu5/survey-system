@@ -8,9 +8,10 @@ import kolokwium.Controlers.Messages.SignUpForm;
 import kolokwium.Model.Role;
 import kolokwium.Model.RoleName;
 import kolokwium.Model.User;
-import kolokwium.Repo.RoleDAO;
-import kolokwium.Repo.UsersDAO;
-import kolokwium.Services.jwt.JwtProvider;
+import kolokwium.Repositories.RoleDAO;
+import kolokwium.Repositories.UsersDAO;
+import kolokwium.Services.UserPrinciple;
+import kolokwium.Services.jwtServices.JwtProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -56,9 +56,9 @@ public class UserControler {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String jwt = jwtProvider.generateJwtToken(authentication);
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        UserPrinciple userDetails = (UserPrinciple) authentication.getPrincipal();
 
-        return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getUsername(), userDetails.getAuthorities()));
+        return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getEmail(), userDetails.getAuthorities()));
     }
 
     @PostMapping("/signup")
@@ -68,13 +68,13 @@ public class UserControler {
                     HttpStatus.BAD_REQUEST);
         }
 
-        if (userRepository.existsByAlbumNumber(signUpRequest.getAlbumNumber())) {
+        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
             return new ResponseEntity<>(new ResponseMessage("Fail -> Email is already in use!"),
                     HttpStatus.BAD_REQUEST);
         }
 
         // Creating user's account
-        User user = new User( signUpRequest.getAlbumNumber(),signUpRequest.getName(),
+        User user = new User( signUpRequest.getEmail(),signUpRequest.getName(),
                 encoder.encode(signUpRequest.getPassword()));
 
         Set<String> strRoles = signUpRequest.getRole();

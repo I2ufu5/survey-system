@@ -17,7 +17,7 @@ public class SignUpForm {
     @NotBlank
     @Size(max = 60)
     @Email
-    private Integer albumNumber;
+    private String email;
     
     private Set<String> role;
     
@@ -41,8 +41,12 @@ public class SignUpForm {
         this.username = username;
     }
 
-    public Integer getAlbumNumber() {
-        return albumNumber;
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {

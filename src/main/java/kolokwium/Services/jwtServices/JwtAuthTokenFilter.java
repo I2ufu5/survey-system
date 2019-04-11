@@ -1,6 +1,7 @@
-package kolokwium.Services.jwt;
+package kolokwium.Services.jwtServices;
 
-import kolokwium.Services.UserDetailsService;
+import kolokwium.Services.UserPrinciple;
+import kolokwium.Services.modelServices.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
 	private JwtProvider tokenProvider;
 
 	@Autowired
-	private UserDetailsService userDetailsService;
+	private UserService userService;
 
 	private static final Logger logger = LoggerFactory.getLogger(JwtAuthTokenFilter.class);
 
@@ -35,7 +36,7 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
 			if (jwt != null && tokenProvider.validateJwtToken(jwt)) {
 				String username = tokenProvider.getUserNameFromJwtToken(jwt);
 
-				UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+				UserPrinciple userDetails = (UserPrinciple) userService.loadUserByUsername(username);
 				UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
 						userDetails, null, userDetails.getAuthorities());
 				authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
