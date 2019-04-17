@@ -1,10 +1,10 @@
 package kolokwium.Controlers;
 
 
-import kolokwium.Controlers.Messages.JwtResponse;
-import kolokwium.Controlers.Messages.LoginForm;
-import kolokwium.Controlers.Messages.ResponseMessage;
-import kolokwium.Controlers.Messages.SignUpForm;
+import kolokwium.Controlers.Messages.UserAccountMessages.JwtResponse;
+import kolokwium.Controlers.Messages.UserAccountMessages.LoginForm;
+import kolokwium.Controlers.Messages.UserAccountMessages.ResponseMessage;
+import kolokwium.Controlers.Messages.UserAccountMessages.SignUpForm;
 import kolokwium.Model.Role;
 import kolokwium.Model.RoleName;
 import kolokwium.Model.User;
@@ -19,7 +19,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 

@@ -2,6 +2,7 @@ package kolokwium;
 
 import kolokwium.Model.*;
 import kolokwium.Repositories.*;
+import kolokwium.Services.modelServices.AnswersService;
 import kolokwium.Services.modelServices.ResponseService;
 import kolokwium.Services.modelServices.RoleService;
 import kolokwium.Services.modelServices.UserService;
@@ -31,10 +32,11 @@ public class Application extends SpringBootServletInitializer {
     public CommandLineRunner DatabaseInit(
             UserService userService,
             QuestionsDAO questionsDAO,
-            AnswersDAO answersDAO,
+            AnswersService answersService,
             ResponseDAO responseDAO,
             ResponseService responseService,
-            RoleService roleService){
+            RoleService roleService,
+            QuizDAO quizDAO){
 
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -51,30 +53,28 @@ public class Application extends SpringBootServletInitializer {
             userService.createUser("132940@stud.prz.edu.pl", "Kowalski","ABCD11");
             userService.createUser("153421@stud.prz.edu.pl","Duda","qwerty");
 
-            questionsDAO.save(new Question("Pytanie1"));
-            questionsDAO.save(new Question("Pytanie2"));
+            quizDAO.save(new Quiz());
 
-            answersDAO.save(new Answer("Odpowiedz1", questionsDAO.findQuestionsByQuestionId(1L),true));
-            answersDAO.save(new Answer("Odpowiedz2", questionsDAO.findQuestionsByQuestionId(1L),false));
-            answersDAO.save(new Answer("Odpowiedz3", questionsDAO.findQuestionsByQuestionId(1L),false));
+            questionsDAO.save(new Question("Pytanie1",quizDAO.getOne(1L)));
+            questionsDAO.save(new Question("Pytanie2",quizDAO.getOne(1L)));
 
-            answersDAO.save(new Answer("Odpowiedz1", questionsDAO.findQuestionsByQuestionId(2L),false));
-            answersDAO.save(new Answer("Odpowiedz2", questionsDAO.findQuestionsByQuestionId(2L),false));
-            answersDAO.save(new Answer("Odpowiedz3", questionsDAO.findQuestionsByQuestionId(2L),true));
+            answersService.addAnswers("Odp1","Odp2","Odp3","Odp4",1L,"c");
+            answersService.addAnswers("Odp21","Odp22","Odp23","Odp24",2L,"a");
 
-            responseDAO.save(new Response(
-                    userService.findByEmail("145203@stud.prz.edu.pl"),
-                    questionsDAO.findQuestionsByQuestionId(1L),
-                    answersDAO.findAnswersByQuestion_QuestionId(1L).get(0)
-            ));
-
-            responseDAO.save(new Response(
-                    userService.findByEmail("145203@stud.prz.edu.pl"),
-                    questionsDAO.findQuestionsByQuestionId(2L),
-                    answersDAO.findAnswersByQuestion_QuestionId(2L).get(1)
-            ));
-
-            responseService.calculateResult("145203@stud.prz.edu.pl");
+//
+//            responseDAO.save(new Response(
+//                    userService.findByEmail("145203@stud.prz.edu.pl"),
+//                    questionsDAO.findQuestionsByQuestionId(1L),
+//                    answersDAO.findAnswersByQuestion_QuestionId(1L).get(0)
+//            ));
+//
+//            responseDAO.save(new Response(
+//                    userService.findByEmail("145203@stud.prz.edu.pl"),
+//                    questionsDAO.findQuestionsByQuestionId(2L),
+//                    answersDAO.findAnswersByQuestion_QuestionId(2L).get(1)
+//            ));
+//
+//            responseService.calculateResult("145203@stud.prz.edu.pl");
 
         };
     }

@@ -1,4 +1,4 @@
-package kolokwium.Controlers.Messages;
+package kolokwium.Controlers.Messages.UserAccountMessages;
 
 public class ResponseMessage {
 	private String message;

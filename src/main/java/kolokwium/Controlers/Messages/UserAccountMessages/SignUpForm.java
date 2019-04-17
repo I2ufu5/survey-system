@@ -1,4 +1,4 @@
-package kolokwium.Controlers.Messages;
+package kolokwium.Controlers.Messages.UserAccountMessages;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;

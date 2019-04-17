@@ -15,15 +15,15 @@ public class Answer {
 
     private boolean isCorrect;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "questionId",nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "questionId")
     @JsonIgnore
     private Question question;
 
     public Answer(String text, Question question, boolean isCorrect) {
         this.text = text;
-        this.question = question;
         this.isCorrect = isCorrect;
+        this.question = question;
     }
 
     public Answer() {

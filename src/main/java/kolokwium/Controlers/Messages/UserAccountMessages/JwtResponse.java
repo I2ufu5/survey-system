@@ -1,4 +1,4 @@
-package kolokwium.Controlers.Messages;
+package kolokwium.Controlers.Messages.UserAccountMessages;
 
 import org.springframework.security.core.GrantedAuthority;
 

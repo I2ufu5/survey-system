@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface AnswersDAO extends JpaRepository<Answer, Long> {
-    List<Answer> findAnswersByQuestion_QuestionId(Long questionId);
     //Answer findAnswersByAnswerIdAndQuestion_QuestionId(Long answerId, Long questionId);
     Answer findAnswersByAnswerId(Long id);
+    List<Answer> findAllByQuestion_QuestionId(Long questionId);
 }
