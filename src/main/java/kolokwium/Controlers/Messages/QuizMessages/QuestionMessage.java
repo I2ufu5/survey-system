@@ -45,16 +45,16 @@ public class QuestionMessage {
 
         this.a = answers.get(0).getText();
         if(answers.get(0).isCorrect())
-            this.answer = a;
+            this.answer = "a";
         this.b = answers.get(1).getText();
         if(answers.get(1).isCorrect())
-            this.answer = b;
+            this.answer = "b";
         this.c = answers.get(2).getText();
         if(answers.get(2).isCorrect())
-            this.answer = c;
+            this.answer = "c";
         this.d = answers.get(3).getText();
         if(answers.get(3).isCorrect())
-            this.answer = d;
+            this.answer = "d";
     }
 
     public QuestionMessage(){
