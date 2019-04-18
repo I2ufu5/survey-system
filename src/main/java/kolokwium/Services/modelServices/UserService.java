@@ -12,13 +12,16 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Set;
+
 @Service
 public class UserService implements org.springframework.security.core.userdetails.UserDetailsService {
     @Autowired
     private UsersDAO usersDAO;
 
     @Autowired
-    private RoleDAO roleDAO;
+    private RoleService roleService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -28,14 +31,17 @@ public class UserService implements org.springframework.security.core.userdetail
         this.usersDAO = usersDAO;
     }
 
-    public boolean createUser(String email, String name, String password){
-        usersDAO.save(new User(email,name,passwordEncoder.encode(password)));
-        return true;
+    public User createUser(String email, String name, String password){
+        return usersDAO.save(new User(email,name,passwordEncoder.encode(password)));
+    }
+
+    public User createUser(User user){
+        return usersDAO.save(user);
     }
 
     public void changeUserPassword(String email, String newPassword){
         User user = usersDAO.findUserByEmail(email).orElseThrow(()-> new UsernameNotFoundException(email));
-        user.setPassword(newPassword);
+        user.setPassword(passwordEncoder.encode(newPassword));
         usersDAO.save(user);
     }
 
@@ -43,20 +49,17 @@ public class UserService implements org.springframework.security.core.userdetail
         return usersDAO.findUserByEmail(email).orElseThrow(()-> new UsernameNotFoundException(email));
     }
 
-    public void submitResult(String email, int result){
+    public void setRole(String email, RoleName roleName){
         User user = usersDAO.findUserByEmail(email).orElseThrow(()-> new UsernameNotFoundException(email));
-        user.setTestResult(Float.valueOf(result));
+        user.getRoles().add(roleService.findByName(roleName)
+                .orElseThrow(()-> new RuntimeException("User Role not found.")));
         usersDAO.save(user);
     }
 
-    public boolean setRole(String email, RoleName roleName){
+    public void setRole(String email, Set<Role> roles){
         User user = usersDAO.findUserByEmail(email).orElseThrow(()-> new UsernameNotFoundException(email));
-        if(user == null)
-            throw new UsernameNotFoundException(email);
-        user.getRoles().add(roleDAO.findByName(roleName)
-                .orElseThrow(()-> new RuntimeException("Fail! -> Cause: User Role not find.")));
+        user.setRoles(roleService.attachRolesFromRoleSet(roles));
         usersDAO.save(user);
-        return true;
     }
 
     @Override
@@ -66,4 +69,24 @@ public class UserService implements org.springframework.security.core.userdetail
 
         return UserPrinciple.build(user);
     }
+
+    public boolean checkExistingByEmail(String email){
+        return usersDAO.existsByEmail(email);
+    }
+
+    public List<User> getAllUsers(){
+        return usersDAO.findAll();
+    }
+
+    public boolean deleteUser(String email){
+        if(usersDAO.existsByEmail(email)) {
+            usersDAO.delete(usersDAO.findUserByEmail(email).orElseThrow(
+                    () -> new UsernameNotFoundException("User Not Found with -> username or email : " + email)));
+            return true;
+        }
+        else
+            return false;
+    }
 }
+
+

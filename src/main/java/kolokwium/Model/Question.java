@@ -14,11 +14,6 @@ public class Question {
 
     private String text;
 
-//    @OneToMany(fetch = FetchType.EAGER)
-//    @JoinColumn(name = "answerId")
-//    @JsonIgnore
-//    private List<Answer> answers;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "quizId")
     @JsonIgnore
@@ -39,10 +34,6 @@ public class Question {
     public void setText(String text) {
         this.text = text;
     }
-
-//    public List<Answer> getAnswers() {
-//        return answers;
-//    }
 
     public Question(String text, Quiz quiz) {
         this.text = text;

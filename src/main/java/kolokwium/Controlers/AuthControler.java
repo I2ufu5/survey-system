@@ -12,6 +12,8 @@ import kolokwium.Repositories.RoleDAO;
 import kolokwium.Repositories.UsersDAO;
 import kolokwium.Services.UserPrinciple;
 import kolokwium.Services.jwtServices.JwtProvider;
+import kolokwium.Services.modelServices.RoleService;
+import kolokwium.Services.modelServices.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,16 +31,16 @@ import java.util.Set;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
-public class UserControler {
+public class AuthControler {
 
     @Autowired
     AuthenticationManager authenticationManager;
 
     @Autowired
-    UsersDAO userRepository;
+    UserService userService;
 
     @Autowired
-    RoleDAO roleRepository;
+    RoleService roleService;
 
     @Autowired
     PasswordEncoder encoder;
@@ -62,47 +64,19 @@ public class UserControler {
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpForm signUpRequest) {
-        if (userRepository.existsByName(signUpRequest.getUsername())) {
-            return new ResponseEntity<>(new ResponseMessage("Fail -> Username is already taken!"),
+
+        if (userService.checkExistingByEmail(signUpRequest.getEmail())) {
+            return new ResponseEntity<>(new ResponseMessage("Fail -> Email jest już użyty!"),
                     HttpStatus.BAD_REQUEST);
         }
 
-        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-            return new ResponseEntity<>(new ResponseMessage("Fail -> Email is already in use!"),
-                    HttpStatus.BAD_REQUEST);
-        }
-
-        // Creating user's account
         User user = new User( signUpRequest.getEmail(),signUpRequest.getName(),
                 encoder.encode(signUpRequest.getPassword()));
 
-        Set<String> strRoles = signUpRequest.getRole();
-        Set<Role> roles = new HashSet<>();
-
-        strRoles.forEach(role -> {
-            switch (role) {
-                case "admin":
-                    Role adminRole = roleRepository.findByName(RoleName.ROLE_ADMIN)
-                            .orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
-                    roles.add(adminRole);
-
-                    break;
-                case "pm":
-                    Role pmRole = roleRepository.findByName(RoleName.ROLE_PM)
-                            .orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
-                    roles.add(pmRole);
-
-                    break;
-                default:
-                    Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
-                            .orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
-                    roles.add(userRole);
-            }
-        });
-
-        user.setRoles(roles);
-        userRepository.save(user);
+        user.setRoles(roleService.attachRolesFromStringSet(signUpRequest.getRole()));
+        userService.createUser(user);
 
         return new ResponseEntity<>(new ResponseMessage("User registered successfully!"), HttpStatus.OK);
     }
+
 }

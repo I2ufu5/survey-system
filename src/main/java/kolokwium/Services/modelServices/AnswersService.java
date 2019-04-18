@@ -33,9 +33,6 @@ public class AnswersService {
 
     public void addAnswersFromMessage(QuestionMessage questionMessage, Long questionId){
         Question question = questionService.getQuestionById(questionId);
-
-        if(questionMessage.answer == null)
-            throw new NoSuchElementException("PUSTA ODPOWIEDX");
         answersDAO.save(new Answer(questionMessage.a,question,questionMessage.answer.equals("a")));
         answersDAO.save(new Answer(questionMessage.b,question,questionMessage.answer.equals("b")));
         answersDAO.save(new Answer(questionMessage.c,question,questionMessage.answer.equals("c")));

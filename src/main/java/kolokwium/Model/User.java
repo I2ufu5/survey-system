@@ -17,10 +17,6 @@ public class User {
 
     private String password;
 
-    private Float testResult;
-
-    //private boolean isAdmin = false;
-
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -57,14 +53,6 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public Float getTestResult() {
-        return testResult;
-    }
-
-    public void setTestResult(Float testResult) {
-        this.testResult = testResult;
     }
 
     public Set<Role> getRoles() {

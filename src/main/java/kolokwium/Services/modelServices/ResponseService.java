@@ -17,19 +17,19 @@ public class ResponseService {
     @Autowired
     UserService userService;
 
-    public int calculateResult(String email)throws UsernameNotFoundException {
-        if(userService.findByEmail(email) == null)
-            throw new UsernameNotFoundException(email.toString());
-
-        int correctCount = 0;
-        Set<Response> responses = responseDAO.findAllByUser_Email(email);
-        for(Response response:responses){
-            if(response.getAnswer().isCorrect())
-                correctCount++;
-
-        }
-
-        userService.submitResult(email,correctCount);
-        return correctCount;
-    }
+//    public int calculateResult(String email)throws UsernameNotFoundException {
+//        if(userService.findByEmail(email) == null)
+//            throw new UsernameNotFoundException(email.toString());
+//
+//        int correctCount = 0;
+//        Set<Response> responses = responseDAO.findAllByUser_Email(email);
+//        for(Response response:responses){
+//            if(response.getAnswer().isCorrect())
+//                correctCount++;
+//
+//        }
+//
+//        userService.submitResult(email,correctCount);
+//        return correctCount;
+//    }
 }

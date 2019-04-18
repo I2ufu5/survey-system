@@ -39,8 +39,6 @@ public class QuestionService {
 
     public void addSingleQuestionFromMessage(QuestionMessage questionMessage){
         Question question = questionsDAO.save(new Question(questionMessage.question));
-        if(question == null)
-            throw new NoSuchElementException("PUSTE PYTANIE");
         answersService.addAnswersFromMessage(questionMessage,question.getQuestionId());
     }
 }
