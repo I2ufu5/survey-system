@@ -3,7 +3,6 @@ package kolokwium;
 import kolokwium.Model.*;
 import kolokwium.Repositories.*;
 import kolokwium.Services.modelServices.AnswersService;
-import kolokwium.Services.modelServices.ResponseService;
 import kolokwium.Services.modelServices.RoleService;
 import kolokwium.Services.modelServices.UserService;
 import org.springframework.boot.CommandLineRunner;
@@ -33,8 +32,6 @@ public class Application extends SpringBootServletInitializer {
             UserService userService,
             QuestionsDAO questionsDAO,
             AnswersService answersService,
-            ResponseDAO responseDAO,
-            ResponseService responseService,
             RoleService roleService,
             QuizDAO quizDAO){
 
@@ -50,7 +47,9 @@ public class Application extends SpringBootServletInitializer {
             userService.setRole("145203@stud.prz.edu.pl",RoleName.ROLE_ADMIN);
             userService.setRole("145203@stud.prz.edu.pl",RoleName.ROLE_USER);
             userService.setRole("145203@stud.prz.edu.pl",RoleName.ROLE_PM);
-            userService.createUser("132940@stud.prz.edu.pl", "Kowalski","ABCD11");
+            userService.submitResult("145203@stud.prz.edu.pl",70);
+
+            userService.createUser("132940@stud.prz.edu.pl", "Kaczyński","ABCD11");
             userService.createUser("153421@stud.prz.edu.pl","Duda","qwerty");
 
             quizDAO.save(new Quiz());

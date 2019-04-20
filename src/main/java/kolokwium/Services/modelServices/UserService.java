@@ -3,7 +3,6 @@ package kolokwium.Services.modelServices;
 import kolokwium.Model.Role;
 import kolokwium.Model.RoleName;
 import kolokwium.Model.User;
-import kolokwium.Repositories.RoleDAO;
 import kolokwium.Repositories.UsersDAO;
 import kolokwium.Services.UserPrinciple;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +49,8 @@ public class UserService implements org.springframework.security.core.userdetail
     }
 
     public void setRole(String email, RoleName roleName){
-        User user = usersDAO.findUserByEmail(email).orElseThrow(()-> new UsernameNotFoundException(email));
+        User user = usersDAO.findUserByEmail(email)
+                .orElseThrow(()-> new UsernameNotFoundException(email));
         user.getRoles().add(roleService.findByName(roleName)
                 .orElseThrow(()-> new RuntimeException("User Role not found.")));
         usersDAO.save(user);
@@ -86,6 +86,18 @@ public class UserService implements org.springframework.security.core.userdetail
         }
         else
             return false;
+    }
+
+    public void submitResult(String email, Integer result){
+        User user = usersDAO.findUserByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
+        user.setUserResult(result);
+        usersDAO.save(user);
+    }
+
+    public Integer getUserResult(String email){
+        User user = usersDAO.findUserByEmail(email)
+                .orElseThrow(()-> new UsernameNotFoundException(email));
+        return user.getUserResult();
     }
 }
 

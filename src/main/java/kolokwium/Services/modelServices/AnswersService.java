@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 public class AnswersService {
@@ -22,7 +21,7 @@ public class AnswersService {
 
 
     public void addAnswers(String a,String b, String c, String d, Long questionId, String isCorrect){
-        Question question = questionService.getQuestionById(questionId);
+        Question question = questionService.findQuestionById(questionId);
 
         answersDAO.save(new Answer(a,question,isCorrect.equals("a")));
         answersDAO.save(new Answer(b,question,isCorrect.equals("b")));
@@ -32,7 +31,7 @@ public class AnswersService {
     }
 
     public void addAnswersFromMessage(QuestionMessage questionMessage, Long questionId){
-        Question question = questionService.getQuestionById(questionId);
+        Question question = questionService.findQuestionById(questionId);
         answersDAO.save(new Answer(questionMessage.a,question,questionMessage.answer.equals("a")));
         answersDAO.save(new Answer(questionMessage.b,question,questionMessage.answer.equals("b")));
         answersDAO.save(new Answer(questionMessage.c,question,questionMessage.answer.equals("c")));
@@ -42,6 +41,10 @@ public class AnswersService {
 
     public List<Answer> findByQuestionId(Long questionId){
         return answersDAO.findAllByQuestion_QuestionId(questionId);
+    }
+
+    public Answer findById(Long answerId){
+        return answersDAO.findAnswersByAnswerId(answerId);
     }
 
 

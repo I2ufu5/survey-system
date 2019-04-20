@@ -33,7 +33,7 @@ public class QuestionService {
         return questionList;
     }
 
-    public Question getQuestionById(Long id){
+    public Question findQuestionById(Long id){
         return questionsDAO.findQuestionsByQuestionId(id);
     }
 

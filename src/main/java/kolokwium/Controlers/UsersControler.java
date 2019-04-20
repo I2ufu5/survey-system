@@ -59,7 +59,8 @@ public class UsersControler {
 
     @DeleteMapping("/")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> deleteUser(@RequestBody String email){
+    public ResponseEntity<?> deleteUser(@RequestBody DeleteUserMessage message){
+        String email = message.getEmail();
         if(userService.deleteUser(email))
             return new ResponseEntity<>(new ResponseMessage("User usunięty"),HttpStatus.OK);
         else

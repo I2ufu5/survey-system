@@ -17,6 +17,8 @@ public class User {
 
     private String password;
 
+    private Integer userResult;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -47,6 +49,14 @@ public class User {
         this.name = name;
     }
 
+    public Integer getUserResult() {
+        return userResult;
+    }
+
+    public void setUserResult(Integer userResult) {
+        this.userResult = userResult;
+    }
+
     public String getPassword() {
         return password;
     }
@@ -67,6 +77,14 @@ public class User {
         this.email = albumNumber;
         this.name = name;
         this.password = password;
+    }
+
+    public User(String email, String name, String password, Set<Role> roles) {
+        this.email = email;
+        this.name = name;
+        this.password = password;
+//        this.userResult = grade;
+        this.roles = roles;
     }
 
     public User() {
