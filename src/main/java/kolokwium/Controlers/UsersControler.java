@@ -41,6 +41,7 @@ public class UsersControler {
     Logger logger = LoggerFactory.getLogger(UsersControler.class);
 
     @PutMapping("/role")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> changeUserRole(@Valid @RequestBody User user){
         userService.setRole(user.getEmail(),user.getRoles());
         return new ResponseEntity<>(new ResponseMessage("Role nadane pomyślnie"), HttpStatus.OK);
@@ -52,19 +53,19 @@ public class UsersControler {
 
         if(encoder.matches(loginForm.getOldPassword(),user.getPassword())){
             userService.changeUserPassword(loginForm.getEmail(),loginForm.getNewPassword());
-            return ResponseEntity.ok("Hasło zmienione pomyślnie");
+            return new ResponseEntity<>(new ResponseMessage("Hasło zmienione pomyślnie"),HttpStatus.OK);
         }else
-            return ResponseEntity.ok("Hasło nie zostało zmienione");
+            return new ResponseEntity<>(new ResponseMessage("Hasło nie zostało zmienione"),HttpStatus.FORBIDDEN);
     }
 
-    @DeleteMapping("/")
+    @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> deleteUser(@RequestBody DeleteUserMessage message){
-        String email = message.getEmail();
-        if(userService.deleteUser(email))
+    public ResponseEntity<?> deleteUser(@PathVariable("id") String id){
+
+        if(userService.deleteUser(Long.parseLong(id)))
             return new ResponseEntity<>(new ResponseMessage("User usunięty"),HttpStatus.OK);
         else
-            return new ResponseEntity<>(new ResponseMessage("Błąd podczas usuwania usera"),HttpStatus.CONFLICT);
+            return new ResponseEntity<>(new ResponseMessage("Błąd podczas usuwania usera"),HttpStatus.FORBIDDEN);
     }
 
     @GetMapping("/")

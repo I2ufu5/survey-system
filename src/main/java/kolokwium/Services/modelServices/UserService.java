@@ -78,10 +78,10 @@ public class UserService implements org.springframework.security.core.userdetail
         return usersDAO.findAll();
     }
 
-    public boolean deleteUser(String email){
-        if(usersDAO.existsByEmail(email)) {
-            usersDAO.delete(usersDAO.findUserByEmail(email).orElseThrow(
-                    () -> new UsernameNotFoundException("User Not Found with -> username or email : " + email)));
+    public boolean deleteUser(Long id){
+        if(usersDAO.existsByUserId(id)) {
+            usersDAO.delete(usersDAO.findByUserId(id).orElseThrow(
+                    () -> new UsernameNotFoundException("User Not Found with -> username or email : " + id)));
             return true;
         }
         else
